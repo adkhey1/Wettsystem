@@ -52,6 +52,26 @@
 
 <br> <br>
 
+
+<form th:action="@{/booking}" method="post">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" id="contactChoice" name="contact" value="btn_einzahlen">
+        <label class="form-check-label" for="contactChoice">
+            Einzahlen
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" id="contactChoice2" name="contact" value="btn_abbuchen" >
+        <label class="form-check-label" for="contactChoice2">
+            Abbuchen
+        </label>
+    </div>
+    <input type="text" name="amount" id="amount" placeholder="Credits" required="required">
+    <input type="submit" class="btn btn-primary" value="Load Credits">
+</form>
+
+
+<!--
 <form th:action="@{/load}" method="post">
     <input type="text" name="money" id="money" placeholder="Credits" required="required">
     <input type="submit" class="btn btn-primary" value="Load Credits">
@@ -61,7 +81,7 @@
     <input type="text" name="money1" id="money1" placeholder="Credits" required="required">
     <input type="submit" class="btn btn-primary" value="Withdraw Credits">
 </form>
-
+-->
 <br>
 <br>
 

@@ -18,6 +18,14 @@ public class ProfilController {
     @Autowired
     ProfilService profilService;
 
+    @PostMapping("/booking")
+    public String makeBooking(@RequestParam String contact, @RequestParam double amount, Model model,
+                              HttpServletRequest request){
+        model.addAttribute("profil", profilService.booking(contact, amount,
+                getUuidFromCookie(request), model));
+        return "profil";
+    }
+
     @PostMapping("/load")
     public String loadCredis(@RequestParam double money, Model model, HttpServletRequest request){
         model.addAttribute("profil", profilService.loadCredit(money, getUuidFromCookie(request), model));

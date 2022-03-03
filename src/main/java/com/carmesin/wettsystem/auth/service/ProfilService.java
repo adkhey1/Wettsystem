@@ -37,8 +37,32 @@ public class ProfilService {
     @Autowired
     private UserRepository userRepository;
 
-    public String booking(double money, String uuid, Model model) {
-    return "huvjre";
+    public String booking(String contact, double amount, String uuid, Model model) {
+
+        UserModel user = userRepository.findByUuid(uuid);
+
+        if(contact.contains("btn_einzahlen")){
+
+            userRepository.deleteByName(user.getName());
+            user.setCredits(user.getCredits() + amount);
+            userRepository.save(user);
+
+            model.addAttribute("profil", "Successful Load!");
+            return "Successful Load!";
+
+        }else if(contact.contains("btn_abbuchen")){
+
+            userRepository.deleteByName(user.getName());
+            user.setCredits(user.getCredits() - amount);
+            userRepository.save(user);
+
+            model.addAttribute("profil", "Successful Withdraw!");
+            return "Successful Withdraw!";
+
+        }else{
+            model.addAttribute("profil", "Check your entries");
+            return "Check your entries";
+        }
     }
 
 
