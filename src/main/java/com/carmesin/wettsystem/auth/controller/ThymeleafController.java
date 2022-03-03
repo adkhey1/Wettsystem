@@ -16,9 +16,6 @@ public class ThymeleafController {
         return "register";
     }
 
-//    @GetMapping("/wetten")
-//    public String wetten() { return  "wetten"; }
-
     @GetMapping("/login")
     public String login() {
         return "login";

@@ -1,6 +1,7 @@
 package com.carmesin.wettsystem.bet.service;
 
 import com.carmesin.wettsystem.bet.model.HorseModel;
+import com.carmesin.wettsystem.bet.model.HorseWithQuote;
 import com.carmesin.wettsystem.bet.model.Leagues;
 import com.carmesin.wettsystem.bet.repository.HorseRepository;
 import com.google.gson.JsonArray;
@@ -17,120 +18,41 @@ public class BetService {
     @Autowired
     private HorseRepository horseRepository;
 
-    public JsonArray calculateQuotes() {
+    public String calculateQuotes(Model model) {
 
         List<HorseModel> allHorses = horseRepository.findAll(); // Load all horses from database
+        double allTotalRussia = calculateAllTotal(allHorses, Leagues.RUSSIA);
         double allTotalGerman = calculateAllTotal(allHorses, Leagues.GERMAN);
-        double allTotalRussian = calculateAllTotal(allHorses, Leagues.RUSSIA);
-        int allTotalChampionsLeague = calculateAllTotalChampion(allHorses, Leagues.CHAMPIONS_LEAGUE);
-        //int allTotalChampionsLeague2 = calculateAllTotalChampion(allHorses, Leagues.CHAMPIONS_LEAGUE);
-        //Second Game -> repetitions with the horses
 
-        JsonArray horses = new JsonArray();
-
-        allHorses.forEach(horse -> {
+        List<HorseWithQuote> russianLeague = new ArrayList<>();
+        List<HorseWithQuote> germanLeague = new ArrayList<>();
+        allHorses.stream().forEach(horse -> {
 
             //every horse get his total value
             int total = calculateTotal(horse);
 
-            //4 Pferde pro Liga in Champions League und daraus 2 Rennen mit jeweils 3 Random pferden aus den 8
-
+            //4 Pferde pro Liga in Champions League und daraus 2 Rennen mit jeweils 3 Random pferden aus den 8 (zukunft)
 
             double quote;
-            if (horse.getLeague() == Leagues.GERMAN) {
-                quote = (allTotalGerman - total) / total;
-                //german.put(horse.getName(), quote);
-            } else if (horse.getLeague() == Leagues.RUSSIA) {
-                quote = (allTotalRussian - total) / total;
-                //russia.put(horse.getName(), quote);
+            if(horse.getLeague() == Leagues.RUSSIA) {
+                quote = (allTotalRussia - total) / total;
+                quote = Math.round(quote * 100.0 ) / 100.0;
+                russianLeague.add(new HorseWithQuote(horse, quote));
             } else {
-                quote = (allTotalChampionsLeague - total) / total;
-            }
-
-            quote = Math.round(quote * 100.0 )/ 100.0;
-
-            JsonObject horseJson = new JsonObject();
-            horseJson.addProperty("name", horse.getName());
-            horseJson.addProperty("quote", quote);
-            horseJson.addProperty("league", horse.getLeague().toString());
-
-            horses.add(horseJson);
-        });
-
-        return horses;
-
-    }
-
-
-
-
-
-    public JsonArray calculateQuotesGerman() {
-
-        List<HorseModel> allHorses = horseRepository.findAll(); // Load all horses from database
-        double allTotalGerman = calculateAllTotal(allHorses, Leagues.GERMAN);
-        JsonArray horses = new JsonArray();
-        allHorses.forEach(horse -> {
-
-            //every horse get his total value
-            int total = calculateTotal(horse);
-
-            //4 Pferde pro Liga in Champions League und daraus 2 Rennen mit jeweils 3 Random pferden aus den 8
-
-
-            double quote;
-            if (horse.getLeague() == Leagues.GERMAN) {
                 quote = (allTotalGerman - total) / total;
-                quote = Math.round(quote * 10) / 10;
-
-                JsonObject horseJson = new JsonObject();
-                horseJson.addProperty("name", horse.getName());
-                horseJson.addProperty("quote", quote);
-
-                horses.add(horseJson);
+                quote = Math.round(quote * 100.0 ) / 100.0;
+                germanLeague.add(new HorseWithQuote(horse, quote));
             }
+
 
         });
 
-        return horses;
+        model.addAttribute("russianLeague", russianLeague);
+        model.addAttribute("germanLeague", germanLeague);
+
+        return "wetten";
 
     }
-
-
-
-
-
-    public HashMap<String, Double> calculateQuotesRussia(Model model) {
-
-        List<HorseModel> allHorses = horseRepository.findAll(); // Load all horses from database
-        double allTotalRussian = calculateAllTotal(allHorses, Leagues.RUSSIA);
-        HashMap<String, Double> russia = new HashMap<>();
-        allHorses.forEach(horse -> {
-
-            //every horse get his total value
-            int total = calculateTotal(horse);
-
-            //4 Pferde pro Liga in Champions League und daraus 2 Rennen mit jeweils 3 Random pferden aus den 8
-
-
-            double quote;
-            if (horse.getLeague() == Leagues.RUSSIA) {
-                quote = (allTotalRussian - total) / total;
-                quote = Math.round(quote * 100.0) / 100.0;
-                russia.put(horse.getName(), quote);
-            }
-
-        });
-        model.addAttribute("russia", russia);
-
-
-        return russia;
-    }
-
-
-
-
-
 
     public HashMap<String, Double> calculateQuotesChampions(Model model) {
 

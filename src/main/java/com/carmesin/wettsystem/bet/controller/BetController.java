@@ -7,9 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class BetController {
@@ -18,15 +16,8 @@ public class BetController {
     BetService betService;
 
     @GetMapping("/wetten")
-    public JsonArray loadQuotes() {
-        return betService.calculateQuotes();
-    }
-
-    @GetMapping("/russia")
-    public String loadQuotesRussia(Model model) {
-
-        model.addAttribute("russia", betService.calculateQuotesRussia(model));
-        return "wetten";
+    public String loadQuotes(Model model) {
+        return betService.calculateQuotes(model);
     }
 
     @GetMapping("/champions")
