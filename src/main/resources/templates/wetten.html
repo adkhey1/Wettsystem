@@ -48,14 +48,14 @@
 <p>Wähle deine Wetten</p>
 
 <div class="container">
-    <div class="row" align="center">
-        <div class="col-4 m-2">
+    <div class="row">
+        <div class="col-3 m-2">
             <h3>Russia</h3>
             <table>
                 <thead>
                 <tr>
-                    <th> Name </th>
-                    <th> Quote </th>
+                    <th> Name</th>
+                    <th> Quote</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -63,8 +63,10 @@
                     <td><span th:text="${russianHorse.horse.name}"> Name </span></td>
                     <td>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="radio_russian" th:value="${russianHorse.quote}" id="flexRadioDefault2" checked>
-                            <label class="form-check-label" for="flexRadioDefault2" th:text="${russianHorse.quote}"></label>
+                            <input class="form-check-input" type="radio" name="radio_russian"
+                                   th:value="${russianHorse.horse.name},${russianHorse.quote}" id="flexRadioDefault2" checked>
+                            <label class="form-check-label" for="flexRadioDefault2"
+                                   th:text="${russianHorse.quote}"></label>
                         </div>
                     </td>
                 </tr>
@@ -72,13 +74,13 @@
             </table>
         </div>
 
-        <div class="col-4 m-2">
+        <div class="col-3 m-2">
             <h3>Germany</h3>
             <table>
                 <thead>
                 <tr>
-                    <th> Name </th>
-                    <th> Quote </th>
+                    <th> Name</th>
+                    <th> Quote</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,8 +88,10 @@
                     <td><span th:text="${germanHorse.horse.name}"> Name </span></td>
                     <td>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="radio_german" th:value="${germanHorse.quote}" id="flexRadioDefault2" checked>
-                            <label class="form-check-label" for="flexRadioDefault2" th:text="${germanHorse.quote}"></label>
+                            <input class="form-check-input" type="radio" name="radio_german"
+                                   th:value="${germanHorse.horse.name},${germanHorse.quote}" id="flexRadioDefault2" checked>
+                            <label class="form-check-label" for="flexRadioDefault2"
+                                   th:text="${germanHorse.quote}"></label>
                         </div>
                     </td>
                 </tr>
@@ -95,12 +99,61 @@
             </table>
         </div>
 
+        <div class="col-3 m-2">
+            <h3>Aktuelle Tipps:</h3>
+            <br>
+            <br>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quote</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><span id="span_russian_name"></span></td>
+                    <td><span id="span_russian_quote"></span></td>
+                </tr>
+                <tr>
+                    <td><span id="span_german_name"></span></td>
+                    <td><span id="span_german_quote"></span></td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <br>
+            <div class="m-2">
+                <label for="input_credit" class="form-label">Credits</label>
+                <input type="number" class="form-control" id="input_credit" placeholder="100">
+            </div>
+            <p class="m-2">Gesamtquote: </p>
+            <p class="m-2">Gesamtgewinn: </p>
+            <button class="btn btn-primary m-2" align="center">Wette platzieren</button>
+        </div>
+
     </div>
 </div>
 
-<a href="/wettschein">
-    <button class="btn btn-primary" align="center">Zum Wettschein</button>
-</a>
+<script>
+    const radio_russian = document.getElementsByName('radio_russian');
+    const radio_german = document.getElementsByName('radio_german');
+
+    const span_russian_name = document.getElementById('span_russian_name');
+    const span_russian_quote = document.getElementById('span_russian_quote');
+    const span_german_name = document.getElementById('span_german_name');
+    const span_russian_quote = document.getElementById('span_russian_quote');
+
+    function refreshSelectedBets(radio_group) {
+        for(let i = 0; i < radio_group.length; i++) {
+            if(radio_group[i].checked) {
+                let value = radio_group[i].value;
+                value = value.split(',');
+
+            }
+        }
+    }
+</script>
 
 </body>
 </html>
