@@ -12,7 +12,7 @@
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
     <script>
-        function getCredits(){
+        function getCredits() {
             alert("Your Credits: " + user.credits)
         }
     </script>
@@ -45,47 +45,44 @@
 
 <h1>Your Profil</h1>
 
-
-<form th:action="@{/credits}" method="post">
-    <input type="submit" class="btn btn-primary" value="See Credits">
-</form>
-
 <br> <br>
 
-
-<form th:action="@{/booking}" method="post">
-    <div class="form-check">
-        <input class="form-check-input" type="radio" id="contactChoice" name="contact" value="btn_einzahlen">
-        <label class="form-check-label" for="contactChoice">
-            Einzahlen
-        </label>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form th:action="@{/booking}" method="post">
+                <div class="form-check">
+                    <p>Enter your transaction rigth here!</p>
+                    <input class="form-check-input" type="radio" id="contactChoice" name="contact"
+                           value="btn_einzahlen">
+                    <label class="form-check-label" for="contactChoice">
+                        Einzahlen
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="contactChoice2" name="contact"
+                           value="btn_abbuchen">
+                    <label class="form-check-label" for="contactChoice2">
+                        Abbuchen
+                    </label>
+                </div>
+                <input type="text" name="amount" id="amount" placeholder="Credits" required="required">
+                <br>
+                <input type="submit" class="btn btn-primary" value="Transaction">
+            </form>
+        </div>
+        <div class="col">
+            <form th:action="@{/credits}" method="post">
+                <p>Click here if you wanna see your Credits</p>
+                <input type="submit" class="btn btn-primary" value="Here!">
+            </form>
+        </div>
     </div>
-    <div class="form-check">
-        <input class="form-check-input" type="radio" id="contactChoice2" name="contact" value="btn_abbuchen" >
-        <label class="form-check-label" for="contactChoice2">
-            Abbuchen
-        </label>
-    </div>
-    <input type="text" name="amount" id="amount" placeholder="Credits" required="required">
-    <input type="submit" class="btn btn-primary" value="Load Credits">
-</form>
+</div>
+</div>
 
-
-<!--
-<form th:action="@{/load}" method="post">
-    <input type="text" name="money" id="money" placeholder="Credits" required="required">
-    <input type="submit" class="btn btn-primary" value="Load Credits">
-</form>
-
-<form th:action="@{/withdraw}" method="post">
-    <input type="text" name="money1" id="money1" placeholder="Credits" required="required">
-    <input type="submit" class="btn btn-primary" value="Withdraw Credits">
-</form>
--->
-<br>
 <br>
 
 <p th:text=${profil}/></p>
-
 </body>
 </html>

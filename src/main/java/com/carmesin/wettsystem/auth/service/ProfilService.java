@@ -41,7 +41,7 @@ public class ProfilService {
 
         UserModel user = userRepository.findByUuid(uuid);
 
-        if(contact.contains("btn_einzahlen")){
+        if (contact.contains("btn_einzahlen")) {
 
             userRepository.deleteByName(user.getName());
             user.setCredits(user.getCredits() + amount);
@@ -50,7 +50,7 @@ public class ProfilService {
             model.addAttribute("profil", "Successful Load!");
             return "Successful Load!";
 
-        }else if(contact.contains("btn_abbuchen")){
+        } else if (contact.contains("btn_abbuchen")) {
 
             userRepository.deleteByName(user.getName());
             user.setCredits(user.getCredits() - amount);
@@ -59,51 +59,17 @@ public class ProfilService {
             model.addAttribute("profil", "Successful Withdraw!");
             return "Successful Withdraw!";
 
-        }else{
+        } else {
             model.addAttribute("profil", "Check your entries");
             return "Check your entries";
         }
     }
 
-
-    public String loadCredit(double money, String uuid, Model model) {
-
-        UserModel user = userRepository.findByUuid(uuid);
-
-        userRepository.deleteByName(user.getName());
-        user.setCredits(user.getCredits() + money);
-        userRepository.save(user);
-
-        model.addAttribute("profil", "Successful Load!");
-        return "Successful Load!";
-
-
-    }
-
-    public String withdrawCredit(double money1, String uuid, Model model) {
-
+    public String credits(String uuid, Model model) {
 
         UserModel user = userRepository.findByUuid(uuid);
+        model.addAttribute("profil", "Your Credits: " + Math.round(user.getCredits() * 100.0 )/ 100.0);
+        return "Your Credits: " + Math.round(user.getCredits() * 100.0 )/ 100.0;
 
-        userRepository.deleteByName(user.getName());
-        user.setCredits(user.getCredits() - money1);
-        userRepository.save(user);
-
-        model.addAttribute("profil", "Successful Withdraw!");
-        return "Successful Withdraw!";
     }
-
-
-public String credits(String name,Model model){
-
-        List<UserModel> users=userRepository.findByName(name);
-        for(UserModel user:users){
-        if(user.getName().equals(name)){
-        model.addAttribute("profil","Your Credits: "+user.getCredits());
-        return"Your Credits: "+user.getCredits();
-        }
-        }
-
-        return"Fail";
-        }
-        }
+}

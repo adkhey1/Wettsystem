@@ -26,17 +26,6 @@ public class ProfilController {
         return "profil";
     }
 
-    @PostMapping("/load")
-    public String loadCredis(@RequestParam double money, Model model, HttpServletRequest request){
-        model.addAttribute("profil", profilService.loadCredit(money, getUuidFromCookie(request), model));
-        return "profil";
-    }
-
-    @PostMapping("/withdraw")
-    public String withdrawCredis(@RequestParam double money1, Model model, HttpServletRequest request){
-        model.addAttribute("profil", profilService.withdrawCredit(money1, getUuidFromCookie(request), model));
-        return "profil";
-    }
 
     @PostMapping("/credits")
     public String credits(Model model, HttpServletRequest request){
