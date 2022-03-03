@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechner</title>
+</head>
+<body>
+
+<h1>Noten Rechner</h1>
+<br>
+<p>Hier registrieren</p>
+<form th:action="@{/register}" method="post">
+
+    <input type="text" name="title" id="title" placeholder="Title" required="required">
+    <input type="text" name="name" id="name" placeholder="Benutzer" required="required">
+    <input type="text" name="email" id="email" placeholder="E-Mail" required="required">
+
+    <br>
+    <br>
+
+    <input type="text" name="country" id="country" placeholder="Country" required="required">
+    <input type="text" name="postcode" id="postcode" placeholder="Post Code" required="required">
+    <input type="text" name="street" id="street" placeholder="Street" required="required">
+    <input type="text" name="streetnumber" id="streetnumber" placeholder="Street Number" required="required">
+
+    <br>
+    <br>
+
+    <input type="text" name="IBAN" id="IBAN" placeholder="IBAN" required="required">
+    <input type="text" name="credits" id="credits" placeholder="Credits" required="required">
+
+    <br>
+    <br>
+
+    <input type="password" name="password" id="password" placeholder="Password" required="required">
+    <input type="password" name="password2" id="password2" placeholder="Erneut eingeben" required="required">
+
+    <br>
+
+    <input type="checkbox" name="check" id="GFG" value="1" required>I confirm that I am over 18 years old
+
+    <br>
+
+    <a href="/wetten">
+        <button>Registrieren</button>
+    </a>
+
+</form>
+<br>
+
+<p th:text=${register}/>
+
+</body>
+</html>

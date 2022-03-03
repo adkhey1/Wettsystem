@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+
+</head>
+<body class=container>
+
+<h1>Wettsystem</h1>
+<br>
+
+<p>Hier einloggen</p>
+
+
+<form th:action="@{/login}" method="post">
+
+    <input type="text" name="name" id="name" placeholder="User" required="required">
+    <input type="password" name="password" id="password" placeholder="Password" required="required">
+
+    <input type="submit" value="Login">
+
+</form>
+
+<!--
+<a href="/wetten">
+    <button>Login</button>
+-->
+
+<a href="/register">
+    <button>Registrieren</button>
+</a>
+
+<br>
+<p th:text=${login}/>
+
+</body>
+</html>
