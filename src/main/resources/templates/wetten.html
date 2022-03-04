@@ -12,7 +12,7 @@
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
 </head>
-<body class=container>
+<body class=container onload=refreshSelectedBets()>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="text-center">
@@ -64,7 +64,7 @@
                     <td>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="radio_russian"
-                                   th:value="${russianHorse.horse.name},${russianHorse.quote}" id="flexRadioDefault2" checked>
+                                   th:value="${russianHorse.horse.name + ',' + russianHorse.quote}" id="flexRadioDefault2" checked>
                             <label class="form-check-label" for="flexRadioDefault2"
                                    th:text="${russianHorse.quote}"></label>
                         </div>
@@ -89,7 +89,7 @@
                     <td>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="radio_german"
-                                   th:value="${germanHorse.horse.name},${germanHorse.quote}" id="flexRadioDefault2" checked>
+                                   th:value="${germanHorse.horse.name + ',' + germanHorse.quote}" id="flexRadioDefault2" checked>
                             <label class="form-check-label" for="flexRadioDefault2"
                                    th:text="${germanHorse.quote}"></label>
                         </div>
@@ -127,8 +127,8 @@
                 <label for="input_credit" class="form-label">Credits</label>
                 <input type="number" class="form-control" id="input_credit" placeholder="100">
             </div>
-            <p class="m-2">Gesamtquote: </p>
-            <p class="m-2">Gesamtgewinn: </p>
+            <p class="m-2" id="p_totalQuote">Gesamtquote: </p>
+            <p class="m-2" id="p_totalWin">Gesamtgewinn: </p>
             <button class="btn btn-primary m-2" align="center">Wette platzieren</button>
         </div>
 
@@ -139,19 +139,49 @@
     const radio_russian = document.getElementsByName('radio_russian');
     const radio_german = document.getElementsByName('radio_german');
 
+    radio_german.forEach(element => element.addEventListener('click', refreshSelectedBets));
+    radio_russian.forEach(element => element.addEventListener('click', refreshSelectedBets));
+
     const span_russian_name = document.getElementById('span_russian_name');
     const span_russian_quote = document.getElementById('span_russian_quote');
     const span_german_name = document.getElementById('span_german_name');
-    const span_russian_quote = document.getElementById('span_russian_quote');
+    const span_german_quote = document.getElementById('span_german_quote');
 
-    function refreshSelectedBets(radio_group) {
-        for(let i = 0; i < radio_group.length; i++) {
-            if(radio_group[i].checked) {
-                let value = radio_group[i].value;
+    const p_totalQuote = document.getElementById('p_totalQuote');
+    const p_totalWin = document.getElementById('p_totalWin');
+    const input_credit = document.getElementById('input_credit');
+
+    input_credit.addEventListener('change', calculateTotalWin)
+
+    function refreshSelectedBets() {
+        let quoteGerman;
+        for(let i = 0; i < radio_german.length; i++) {
+            if(radio_german[i].checked) {
+                let value = radio_german[i].value;
                 value = value.split(',');
-
+                quoteGerman = parseFloat(value[1]);
+                span_german_name.innerHTML = value[0];
+                span_german_quote.innerHTML = value[1];
             }
         }
+
+        let quoteRussia;
+        for(let i = 0; i < radio_russian.length; i++) {
+            if(radio_russian[i].checked) {
+                let value = radio_russian[i].value;
+                value = value.split(',');
+                quoteRussia = parseFloat(value[1]);
+                span_russian_name.innerHTML = value[0];
+                span_russian_quote.innerHTML = value[1];
+            }
+        }
+
+        p_totalQuote.innerHTML = 'Gesamtquote: ' + (quoteRussia * quoteGerman).toFixed(2);
+
+    }
+
+    function calculateTotalWin() {
+        p_totalWin.innerHTML = parseFloat(p_totalQuote.value.split(' ')[1]) * parseFloat(input_credit.value);
     }
 </script>
 
