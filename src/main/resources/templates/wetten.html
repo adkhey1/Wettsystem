@@ -127,14 +127,19 @@
                 <label for="input_credit" class="form-label">Credits</label>
                 <input type="number" class="form-control" id="input_credit" placeholder="100">
             </div>
-            <p class="m-2" id="p_totalQuote">Gesamtquote: </p>
+            <p class="m-2" id="p_totalQuote">Gesamtquote: 1</p>
             <p class="m-2" id="p_totalWin">Gesamtgewinn: 0</p>
-            <button class="btn btn-primary m-2" align="center">Wette platzieren</button>
+
+            <form th:action="@{/placeBet}" method="post">
+                <input type="text" name="input_german_bet_name" id="input_german_bet_name" hidden>
+                <input type="text" name="input_russian_bet_name" id="input_russian_bet_name" hidden>
+                <button type="submit" class="btn btn-primary m-2" align="center">Wette platzieren</button>
+            </form>
         </div>
 
     </div>
 </div>
-
+<p th:text=${end}/></p>
 <script>
     const radio_russian = document.getElementsByName('radio_russian');
     const radio_german = document.getElementsByName('radio_german');
@@ -146,6 +151,9 @@
     const span_russian_quote = document.getElementById('span_russian_quote');
     const span_german_name = document.getElementById('span_german_name');
     const span_german_quote = document.getElementById('span_german_quote');
+
+    const input_german_bet_name = document.getElementById('input_german_bet_name');
+    const input_russian_bet_name = document.getElementById('input_russian_bet_name');
 
     const p_totalQuote = document.getElementById('p_totalQuote');
     const p_totalWin = document.getElementById('p_totalWin');
@@ -161,6 +169,7 @@
                 value = value.split(',');
                 quoteGerman = parseFloat(value[1]);
                 span_german_name.innerHTML = value[0];
+                input_german_bet_name.value = value[0];
                 span_german_quote.innerHTML = value[1];
             }
         }
@@ -172,6 +181,7 @@
                 value = value.split(',');
                 quoteRussia = parseFloat(value[1]);
                 span_russian_name.innerHTML = value[0];
+                input_russian_bet_name.value = value[0];
                 span_russian_quote.innerHTML = value[1];
             }
         }
