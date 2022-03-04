@@ -64,7 +64,7 @@
                     <td>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="radio_russian"
-                                   th:value="${russianHorse.horse.name + ',' + russianHorse.quote}" id="flexRadioDefault2" checked>
+                                   th:value="${russianHorse.horse.name + ',' + russianHorse.quote}" id="flexRadioDefault2">
                             <label class="form-check-label" for="flexRadioDefault2"
                                    th:text="${russianHorse.quote}"></label>
                         </div>
@@ -89,7 +89,7 @@
                     <td>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="radio_german"
-                                   th:value="${germanHorse.horse.name + ',' + germanHorse.quote}" id="flexRadioDefault2" checked>
+                                   th:value="${germanHorse.horse.name + ',' + germanHorse.quote}" id="flexRadioDefault2">
                             <label class="form-check-label" for="flexRadioDefault2"
                                    th:text="${germanHorse.quote}"></label>
                         </div>
@@ -128,7 +128,7 @@
                 <input type="number" class="form-control" id="input_credit" placeholder="100">
             </div>
             <p class="m-2" id="p_totalQuote">Gesamtquote: </p>
-            <p class="m-2" id="p_totalWin">Gesamtgewinn: </p>
+            <p class="m-2" id="p_totalWin">Gesamtgewinn: 0</p>
             <button class="btn btn-primary m-2" align="center">Wette platzieren</button>
         </div>
 
@@ -151,7 +151,7 @@
     const p_totalWin = document.getElementById('p_totalWin');
     const input_credit = document.getElementById('input_credit');
 
-    input_credit.addEventListener('change', calculateTotalWin)
+    input_credit.addEventListener('input', calculateTotalWin)
 
     function refreshSelectedBets() {
         let quoteGerman;
@@ -176,12 +176,20 @@
             }
         }
 
-        p_totalQuote.innerHTML = 'Gesamtquote: ' + (quoteRussia * quoteGerman).toFixed(2);
+        if(quoteRussia == undefined) {
+            p_totalQuote.innerHTML = 'Gesamtquote: ' + quoteGerman;
+        } else if(quoteGerman == undefined) {
+            p_totalQuote.innerHTML = 'Gesamtquote: ' + quoteRussia;
+        } else {
+            p_totalQuote.innerHTML = 'Gesamtquote: ' + (quoteRussia * quoteGerman).toFixed(2);
+        }
 
     }
 
     function calculateTotalWin() {
-        p_totalWin.innerHTML = parseFloat(p_totalQuote.value.split(' ')[1]) * parseFloat(input_credit.value);
+        const totalQuote = parseFloat(p_totalQuote.outerText.split(' ')[1]);
+        const credit = parseFloat(input_credit.value);
+        p_totalWin.innerHTML = 'Gesamtgewinn: ' + (totalQuote * credit).toFixed(2);
     }
 </script>
 
