@@ -21,12 +21,17 @@ public class BetController {
 
     @GetMapping("/wetten")
     public String loadQuotes(Model model) {
+        //Fill all horses into the hashmap response
         HashMap<String, List<HorseWithQuote>> response = betService.calculateQuotes();
+
+        //get german Horses by HashMap Key "germanLeague"
         model.addAttribute("germanLeague", response.get("germanLeague"));
+        //get russian Horses by HashMap Key "russianLeague"
         model.addAttribute("russianLeague", response.get("russianLeague"));
         return "wetten";
     }
 
+    //not in use
     @GetMapping("/champions")
     public String loadQuotesChampions(Model model) {
 

@@ -7,11 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @Document("Horses")
+/**
+ * Create the HorseModel Object
+ */
 public class HorseModel {
-
-    //Pferdenamen Alkohol und Modemarken
-    //Vodi, Hennesy, Barcardi, Sky, Goose, Belvedere, Beluga, Crystal, Jacky, Malibu -> Russische Liga
-    //Prada, Polo, Chanel, Valentino!!!, Bottega, Givenchy, Gucci, Fendi, Vuitton, McQueen -> Deutsche Liga
 
     private String name;
     private String origin;

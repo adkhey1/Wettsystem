@@ -17,10 +17,18 @@ public class BetService {
     @Autowired
     private HorseRepository horseRepository;
 
+    /**
+     * Calculate all quotes from thr horses (round on two digits)
+     * Put them in a HashMap
+     *
+     * @return HashMap with Key = League / Value = HorseModel + Quote of the Horse
+     */
     public HashMap<String, List<HorseWithQuote>> calculateQuotes() {
 
         List<HorseModel> allHorses = horseRepository.findAll(); // Load all horses from database
+        //sum of all the total values of the russian horses
         double allTotalRussia = calculateAllTotal(allHorses, Leagues.RUSSIA);
+        //sum of all the total values of the german horses
         double allTotalGerman = calculateAllTotal(allHorses, Leagues.GERMAN);
 
         List<HorseWithQuote> russianLeague = new ArrayList<>();
@@ -30,16 +38,14 @@ public class BetService {
             //every horse get his total value
             int total = calculateTotal(horse);
 
-            //4 Pferde pro Liga in Champions League und daraus 2 Rennen mit jeweils 3 Random pferden aus den 8 (zukunft)
-
             double quote;
-            if(horse.getLeague() == Leagues.RUSSIA) {
+            if (horse.getLeague() == Leagues.RUSSIA) {
                 quote = (allTotalRussia - total) / total;
-                quote = Math.round(quote * 100.0 ) / 100.0;
+                quote = Math.round(quote * 100.0) / 100.0;
                 russianLeague.add(new HorseWithQuote(horse, quote));
             } else {
                 quote = (allTotalGerman - total) / total;
-                quote = Math.round(quote * 100.0 ) / 100.0;
+                quote = Math.round(quote * 100.0) / 100.0;
                 germanLeague.add(new HorseWithQuote(horse, quote));
             }
 
@@ -54,6 +60,7 @@ public class BetService {
 
     }
 
+    //not in use jet
     public HashMap<String, Double> calculateQuotesChampions(Model model) {
 
         List<HorseModel> allHorses = horseRepository.findAll(); // Load all horses from database
@@ -70,7 +77,7 @@ public class BetService {
             double quote = 0;
             if (horse.getLeague() == Leagues.CHAMPIONS_LEAGUE) {
                 quote = (allTotalChampionsLeague - total) / total;
-                quote = Math.round(quote * 10 )/ 10;
+                quote = Math.round(quote * 10) / 10;
                 champions.put(horse.getName(), quote);
             }
 
@@ -82,6 +89,13 @@ public class BetService {
 
     }
 
+    /**
+     * adds the integer values together to create a total value
+     * Value to calculate the quote
+     *
+     * @param horseModel to calculate with the values
+     * @return TotalValue of the Horse (int)
+     */
     private int calculateTotal(HorseModel horseModel) {
         return horseModel.getSpeed() +
                 horseModel.getReaction() +
@@ -90,6 +104,13 @@ public class BetService {
                 horseModel.getStarts();
     }
 
+    /**
+     * Adds up all total values of the horses (German and Russian leagues separately)
+     *
+     * @param allHorses to calculate with the values
+     * @param league to differentiate the league
+     * @return
+     */
     private double calculateAllTotal(List<HorseModel> allHorses, Leagues league) {
         return allHorses.stream()
                 .filter(horse -> horse.getLeague() == league)
@@ -97,6 +118,7 @@ public class BetService {
                 .reduce(0, Integer::sum);
     }
 
+    //not in use jet
     private int calculateAllTotalChampion(List<HorseModel> allHorses, Leagues league) {
 
         Random rand = new Random();
@@ -119,6 +141,14 @@ public class BetService {
         return 0;
     }
 
+    /**
+     * checks which horse has been bet on
+     * result of the bet
+     *
+     * @param germanBet name of the german horse bet or null
+     * @param russianBet name of the russian horse bet or null
+     * @return winning = rigth bet / losing = wrong bet
+     */
     public String placeBet(String germanBet, String russianBet) {
 
         HashMap<String, List<HorseWithQuote>> quotes = calculateQuotes();
@@ -128,37 +158,46 @@ public class BetService {
 
         boolean hasWonRussianLeague = russianWinner.equals(russianBet);
         boolean hasWonGermanLeague = germanWinner.equals(germanBet);
-        if(germanBet.isEmpty() && hasWonRussianLeague) {
-            return "gewonnen";
-        } else if(russianBet.isEmpty() && hasWonGermanLeague) {
-            return "gewonnen";
-        } else if(hasWonRussianLeague && hasWonGermanLeague) {
-            return "gewonnen";
+        if (germanBet.isEmpty() && hasWonRussianLeague) {
+            return "winning";
+        } else if (russianBet.isEmpty() && hasWonGermanLeague) {
+            return "winning";
+        } else if (hasWonRussianLeague && hasWonGermanLeague) {
+            return "winning";
         } else {
-            return "verloren";
+            return "losing";
         }
 
     }
 
+    /**
+     *Calculate the Winner for the german race and the russain race separate
+     *
+     * @param league to calculate winner
+     * @return the name of the horse that won
+     */
     private String calculateWinner(List<HorseWithQuote> league) {
 
+        //reciprocal value of each quote
         league = league.stream().map(horse -> {
             horse.setQuote(1 / horse.getQuote());
             return horse;
         }).collect(Collectors.toList());
 
+        //sum of each reciprocal value
         double sum = league.stream().map(horse -> horse.getQuote()).reduce(0.0, Double::sum);
+        //create a random double in the interval of all qoutes
         double result = Math.random() * sum;
 
+        //stops by the winning horse by each league an returns it
         double counter = 0.0;
-        for(HorseWithQuote horse : league) {
+        for (HorseWithQuote horse : league) {
             counter += horse.getQuote();
-            if(counter > result) {
+            if (counter > result) {
                 return horse.getHorse().getName();
             }
         }
 
         return "";
-
     }
 }

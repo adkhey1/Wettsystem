@@ -6,6 +6,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
+/**
+ * Create HorseModel with Quote Object
+ */
 public class HorseWithQuote {
 
     private HorseModel horse;
