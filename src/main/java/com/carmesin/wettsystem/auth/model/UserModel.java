@@ -7,6 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @Document("Users")
+/**
+ * Create the RegisterUser Object
+ */
 public class UserModel {
 
     private String name;

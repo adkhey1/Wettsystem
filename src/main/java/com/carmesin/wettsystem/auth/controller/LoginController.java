@@ -23,13 +23,19 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
-
+    /**
+     *
+     * @param name input of name
+     * @param password input of password
+     * @param model
+     * @param response add cookie to response
+     * @return login by incorrect entries (repeated login.html) / redirekt:wetten goes to wetten.html
+     */
     @PostMapping("/login")
     public String login (@RequestParam String name, @RequestParam String password, Model model,
                          HttpServletResponse response) {
-        //return wert ist entweder "login" oder "wetten"
 
-
+        //Returns login or wetten
         return loginService.login(name, password, model, response);
     }
 }

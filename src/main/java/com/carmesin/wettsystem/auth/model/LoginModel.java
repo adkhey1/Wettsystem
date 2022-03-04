@@ -6,6 +6,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+/**
+ * Create the LoginUser Object
+ */
 public class LoginModel {
 
     private String user;

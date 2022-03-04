@@ -16,41 +16,44 @@ public class RegisterService {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     *
+     * @param user all input for UserModel
+     * @param password2 input password (second Password)
+     * @param model
+     * @param response add cookie
+     * @return register = incorrect entries / redirect:wetten = successful regist
+     */
+
     public String registrieren(UserModel user, String password2, Model model,
                                HttpServletResponse response) {
 
-        //für jeden verschiedenen fall wird mit einer if methode geschaut was eintrifft und ja nach dem wird
-        //der hashmap model ein key "login" hinzugefügt mit den unterschiedlichen values
-        // die im register.html augegeben werden
+        //for each different case, an if method is used to see what happens.
 
-        //schaut ob benutzer leer ist
+        //username is empty
         if (user.getName().isEmpty()) {
             model.addAttribute("register", "Please enter a Username");
         }
 
-        //schaut ob es schon einen Benutzer mit dem selben namen gibt
+        //user with the same name already exists
         if (userExist(user.getName())) {
             model.addAttribute("register", "Username always exists");
             return "register";
         }
 
+        //validate E-Mail
         if (!isEmail(user.getEmail())) {
             model.addAttribute("register", "Check your Email -> it needs an '@' and an '.'");
             return "register";
         }
 
+        //validate IBAN
         if (!isIBAN(user.getIBAN())) {
             model.addAttribute("register", "Check your IBAN -> it starts with 'DE' and needs 20 figures");
             return "register";
         }
 
-        //prüft ob die beiden passwörter identisch sind
-        //falls ja fügt er den benuter der ArrayList hinzu mit der methode addBenutzer
-        //und return noten, damit kommt man dann ins andere html dokument und hat den register geschafft
-        //falls die passwörter nicht identisch sind kriegt die hashmap model wieder mit addAttribute
-        //den key wert "login" dessen vaule man dann im html ausgibt.
-        //es wird register return und damit das html register erneut gestartet
-
+        //Passwords are similar
         if (isSimilarPassword(user.getPassword(), password2)) {
             addUser(user);
             Cookie cookie = new Cookie("UUID", user.getUuid());
