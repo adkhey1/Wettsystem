@@ -1,13 +1,18 @@
 package com.carmesin.wettsystem.bet.service;
 
+import com.carmesin.wettsystem.auth.model.UserModel;
+import com.carmesin.wettsystem.auth.repository.UserRepository;
 import com.carmesin.wettsystem.bet.model.HorseModel;
 import com.carmesin.wettsystem.bet.model.HorseWithQuote;
 import com.carmesin.wettsystem.bet.model.Leagues;
 import com.carmesin.wettsystem.bet.repository.HorseRepository;
+import com.carmesin.wettsystem.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,6 +21,8 @@ public class BetService {
 
     @Autowired
     private HorseRepository horseRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Calculate all quotes from thr horses (round on two digits)
@@ -84,7 +91,6 @@ public class BetService {
         });
         model.addAttribute("champions", champions);
 
-
         return champions;
 
     }
@@ -149,9 +155,17 @@ public class BetService {
      * @param russianBet name of the russian horse bet or null
      * @return winning = rigth bet / losing = wrong bet
      */
-    public String placeBet(String germanBet, String russianBet) {
+    public String placeBet(String germanBet, String russianBet, double creditsBet,String uuid) {
 
         HashMap<String, List<HorseWithQuote>> quotes = calculateQuotes();
+
+        UserModel user = userRepository.findByUuid(uuid);
+
+        if(creditsBet > user.getCredits()){
+            return "you have too few credits for this tip \n Your Credits: " + Math.round(user.getCredits() * 100.0 )/ 100.0;
+
+        }
+
 
         String russianWinner = calculateWinner(quotes.get("russianLeague"));
         String germanWinner = calculateWinner(quotes.get("germanLeague"));
@@ -165,6 +179,9 @@ public class BetService {
         } else if (hasWonRussianLeague && hasWonGermanLeague) {
             return "winning";
         } else {
+            userRepository.deleteByName(user.getName());
+            user.setCredits(user.getCredits()-creditsBet);
+            userRepository.save(user);
             return "losing";
         }
 
