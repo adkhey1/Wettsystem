@@ -6,13 +6,10 @@ import com.carmesin.wettsystem.bet.model.HorseModel;
 import com.carmesin.wettsystem.bet.model.HorseWithQuote;
 import com.carmesin.wettsystem.bet.model.Leagues;
 import com.carmesin.wettsystem.bet.repository.HorseRepository;
-import com.carmesin.wettsystem.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,7 +111,7 @@ public class BetService {
      * Adds up all total values of the horses (German and Russian leagues separately)
      *
      * @param allHorses to calculate with the values
-     * @param league to differentiate the league
+     * @param league    to differentiate the league
      * @return
      */
     private double calculateAllTotal(List<HorseModel> allHorses, Leagues league) {
@@ -149,46 +146,110 @@ public class BetService {
 
     /**
      * checks which horse has been bet on
-     * result of the bet
+     * result of the bet and update data (credits) in database
      *
-     * @param germanBet name of the german horse bet or null
+     * @param germanBet  name of the german horse bet or null
      * @param russianBet name of the russian horse bet or null
      * @return winning = rigth bet / losing = wrong bet
      */
-    public String placeBet(String germanBet, String russianBet, double creditsBet,String uuid) {
+    public String placeBet(String germanBet, String russianBet, double creditsBet, String uuid) {
 
         HashMap<String, List<HorseWithQuote>> quotes = calculateQuotes();
 
         UserModel user = userRepository.findByUuid(uuid);
 
-        if(creditsBet > user.getCredits()){
-            return "you have too few credits for this tip \n Your Credits: " + Math.round(user.getCredits() * 100.0 )/ 100.0;
-
+        if (creditsBet > user.getCredits()) {
+            return "you have too few credits for this tip -> Your Credits: " + Math.round(user.getCredits() * 100.0) / 100.0;
         }
 
+        double totalQuote = calculateTotalQuote(quotes, russianBet, germanBet);
 
         String russianWinner = calculateWinner(quotes.get("russianLeague"));
         String germanWinner = calculateWinner(quotes.get("germanLeague"));
 
         boolean hasWonRussianLeague = russianWinner.equals(russianBet);
         boolean hasWonGermanLeague = germanWinner.equals(germanBet);
+
+        String resultWin = "";
+
         if (germanBet.isEmpty() && hasWonRussianLeague) {
-            return "winning";
+            resultWin = "winning";
         } else if (russianBet.isEmpty() && hasWonGermanLeague) {
-            return "winning";
+            resultWin = "winning";
         } else if (hasWonRussianLeague && hasWonGermanLeague) {
-            return "winning";
+            resultWin = "winning";
         } else {
             userRepository.deleteByName(user.getName());
-            user.setCredits(user.getCredits()-creditsBet);
+            user.setCredits(user.getCredits() - creditsBet);
             userRepository.save(user);
             return "losing";
         }
 
+        //update credits by winning a bet and return "winning"
+        if (resultWin.equals("winning")) {
+            userRepository.deleteByName(user.getName());
+            user.setCredits(user.getCredits() + (creditsBet * totalQuote));
+            userRepository.save(user);
+            return "winning";
+        }
+        return "losing";
     }
 
     /**
-     *Calculate the Winner for the german race and the russain race separate
+     * Get the odds from the hashmap and multiply if there are 2 tips
+     *
+     * @param quotes HashMap of all horses with quotes
+     * @param russianBet horse that was tipped (russian league)
+     * @param germanBet horse that was tipped (german league)
+     * @return total Quote (Combination or Single)
+     */
+    private double calculateTotalQuote(HashMap<String, List<HorseWithQuote>> quotes, String russianBet, String germanBet) {
+
+        String horses = quotes.clone().toString();
+
+        String russianResult = "";
+        double russianQuote = 0;
+        String germanResult = "";
+        double germanQuote = 0;
+
+        //gets german quotes in double
+        if (!germanBet.isEmpty()) {
+            String germanStep1 = horses.split(germanBet)[1].split(", Horse")[0];
+            String germanStep2 = germanStep1.split(", quote=")[1];
+            int germanEnd = germanStep2.indexOf(')');
+            if (germanEnd >= 0) {
+                germanResult = germanStep2.substring(0, germanEnd);
+                germanQuote = Double.parseDouble(germanResult);
+            } else {
+                germanQuote = 0;
+            }
+        }
+
+        //gets russian quotes in double
+        if (!russianBet.isEmpty()) {
+            String russianStep1 = horses.split(russianBet)[1].split(", Horse")[0];
+            String russainStep2 = russianStep1.split(", quote=")[1];
+            int russianEnd = russainStep2.indexOf(')');
+            if (russianEnd >= 0) {
+                russianResult = russainStep2.substring(0, russianEnd);
+                russianQuote = Double.parseDouble(russianResult);
+            } else {
+                russianQuote = 0;
+            }
+        }
+
+        //for combination and single bets
+        if (russianQuote == 0) {
+            return Math.round(germanQuote * 100.0) / 100.0;
+        } else if (germanQuote == 0) {
+            return Math.round(russianQuote * 100.0) / 100.0;
+        } else {
+            return Math.round((russianQuote * germanQuote) * 100.0) / 100.0;
+        }
+    }
+
+    /**
+     * Calculate the Winner for the german race and the russain race separate
      *
      * @param league to calculate winner
      * @return the name of the horse that won
@@ -214,7 +275,6 @@ public class BetService {
                 return horse.getHorse().getName();
             }
         }
-
         return "";
     }
 }
