@@ -1,5 +1,6 @@
 package com.carmesin.wettsystem.bet.controller;
 
+import com.carmesin.wettsystem.auth.model.BetSlipModel;
 import com.carmesin.wettsystem.bet.model.HorseWithQuote;
 import com.carmesin.wettsystem.bet.service.BetService;
 import com.google.gson.JsonArray;
@@ -50,6 +51,12 @@ public class BetController {
         String status = betService.placeBet(input_german_bet_name, input_russian_bet_name, input_credit, uuid);
         model.addAttribute("end", status);
         return "wetten";
+    }
+
+    @PostMapping("/betSlip")
+    public String betSlip(){
+
+        return "alleWettschein";
     }
 
     private String getUuidFromCookie(HttpServletRequest request) {

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @Document("Users")
@@ -23,6 +25,7 @@ public class UserModel {
     private String IBAN;
     private String uuid;
     private double credits;
+    private List<BetSlipModel> betSlips;
 
 }
 

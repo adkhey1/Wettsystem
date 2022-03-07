@@ -1,5 +1,6 @@
 package com.carmesin.wettsystem.bet.service;
 
+import com.carmesin.wettsystem.auth.model.BetSlipModel;
 import com.carmesin.wettsystem.auth.model.UserModel;
 import com.carmesin.wettsystem.auth.repository.UserRepository;
 import com.carmesin.wettsystem.bet.model.HorseModel;
@@ -162,7 +163,7 @@ public class BetService {
             return "you have too few credits for this tip -> Your Credits: " + Math.round(user.getCredits() * 100.0) / 100.0;
         }
 
-        double totalQuote = calculateTotalQuote(quotes, russianBet, germanBet);
+        ArrayList<Double> totalQuote = calculateTotalQuote(quotes, russianBet, germanBet);
 
         String russianWinner = calculateWinner(quotes.get("russianLeague"));
         String germanWinner = calculateWinner(quotes.get("germanLeague"));
@@ -171,6 +172,7 @@ public class BetService {
         boolean hasWonGermanLeague = germanWinner.equals(germanBet);
 
         String resultWin = "";
+
 
         if (germanBet.isEmpty() && hasWonRussianLeague) {
             resultWin = "winning";
@@ -181,6 +183,11 @@ public class BetService {
         } else {
             userRepository.deleteByName(user.getName());
             user.setCredits(user.getCredits() - creditsBet);
+            BetSlipModel currentBet = new BetSlipModel(russianBet, totalQuote.get(0), germanBet,
+                    totalQuote.get(1), creditsBet, totalQuote.get(2),
+                    Math.round((creditsBet * totalQuote.get(2))* 100.0 ) / 100.0, "lose");
+
+            user.getBetSlips().add(currentBet);
             userRepository.save(user);
             return "losing";
         }
@@ -188,7 +195,11 @@ public class BetService {
         //update credits by winning a bet and return "winning"
         if (resultWin.equals("winning")) {
             userRepository.deleteByName(user.getName());
-            user.setCredits(user.getCredits() + (creditsBet * totalQuote));
+            user.setCredits(user.getCredits() + (creditsBet * totalQuote.get(2)));
+            BetSlipModel currentBet = new BetSlipModel(russianBet, totalQuote.get(0), germanBet,
+                    totalQuote.get(1), creditsBet, totalQuote.get(2),
+                    Math.round((creditsBet * totalQuote.get(2))* 100.0 ) / 100.0, "win");
+            user.getBetSlips().add(currentBet);
             userRepository.save(user);
             return "winning";
         }
@@ -198,12 +209,12 @@ public class BetService {
     /**
      * Get the odds from the hashmap and multiply if there are 2 tips
      *
-     * @param quotes HashMap of all horses with quotes
+     * @param quotes     HashMap of all horses with quotes
      * @param russianBet horse that was tipped (russian league)
-     * @param germanBet horse that was tipped (german league)
+     * @param germanBet  horse that was tipped (german league)
      * @return total Quote (Combination or Single)
      */
-    private double calculateTotalQuote(HashMap<String, List<HorseWithQuote>> quotes, String russianBet, String germanBet) {
+    private ArrayList<Double> calculateTotalQuote(HashMap<String, List<HorseWithQuote>> quotes, String russianBet, String germanBet) {
 
         String horses = quotes.clone().toString();
 
@@ -238,13 +249,20 @@ public class BetService {
             }
         }
 
+        ArrayList allQuotes = new ArrayList<Double>();
+        allQuotes.add(russianQuote);
+        allQuotes.add(germanQuote);
+
         //for combination and single bets
         if (russianQuote == 0) {
-            return Math.round(germanQuote * 100.0) / 100.0;
+            allQuotes.add(Math.round(germanQuote * 100.0) / 100.0);
+            return allQuotes;
         } else if (germanQuote == 0) {
-            return Math.round(russianQuote * 100.0) / 100.0;
+            allQuotes.add(Math.round(russianQuote * 100.0) / 100.0);
+            return allQuotes;
         } else {
-            return Math.round((russianQuote * germanQuote) * 100.0) / 100.0;
+            allQuotes.add(Math.round((russianQuote * germanQuote) * 100.0) / 100.0);
+            return allQuotes;
         }
     }
 

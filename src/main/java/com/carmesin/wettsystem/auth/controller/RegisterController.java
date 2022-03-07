@@ -1,5 +1,6 @@
 package com.carmesin.wettsystem.auth.controller;
 
+import com.carmesin.wettsystem.auth.model.BetSlipModel;
 import com.carmesin.wettsystem.auth.model.UserModel;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,6 +11,8 @@ import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -32,9 +35,10 @@ public class RegisterController {
                            @RequestParam String IBAN, @RequestParam double credits, Model model,
                            HttpServletResponse response) {
 
+        List<BetSlipModel> betSlip = new ArrayList<BetSlipModel>();
         String uuid = UUID.randomUUID().toString();
         UserModel userModel = new UserModel(name, password, title, country, postcode, street, streetnumber,
-                email, IBAN, uuid, credits);
+                email, IBAN, uuid, credits, betSlip);
 
         //return "wetten" or "register"
         return registerService.registrieren(userModel, password2, model, response);
