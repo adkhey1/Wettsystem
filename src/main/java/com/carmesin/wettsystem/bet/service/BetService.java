@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -171,7 +172,7 @@ public class BetService {
         boolean hasWonRussianLeague = russianWinner.equals(russianBet);
         boolean hasWonGermanLeague = germanWinner.equals(germanBet);
 
-        String resultWin = "";
+        String resultWin;
 
 
         if (germanBet.isEmpty() && hasWonRussianLeague) {
@@ -185,8 +186,7 @@ public class BetService {
             user.setCredits(user.getCredits() - creditsBet);
             BetSlipModel currentBet = new BetSlipModel(russianBet, totalQuote.get(0), germanBet,
                     totalQuote.get(1), creditsBet, totalQuote.get(2),
-                    Math.round((creditsBet * totalQuote.get(2))* 100.0 ) / 100.0, "lose");
-
+                    Math.round((creditsBet * totalQuote.get(2)) * 100.0) / 100.0, "lose");
             user.getBetSlips().add(currentBet);
             userRepository.save(user);
             return "losing";
@@ -198,7 +198,7 @@ public class BetService {
             user.setCredits(user.getCredits() + (creditsBet * totalQuote.get(2)));
             BetSlipModel currentBet = new BetSlipModel(russianBet, totalQuote.get(0), germanBet,
                     totalQuote.get(1), creditsBet, totalQuote.get(2),
-                    Math.round((creditsBet * totalQuote.get(2))* 100.0 ) / 100.0, "win");
+                    Math.round((creditsBet * totalQuote.get(2)) * 100.0) / 100.0, "win");
             user.getBetSlips().add(currentBet);
             userRepository.save(user);
             return "winning";
@@ -218,9 +218,9 @@ public class BetService {
 
         String horses = quotes.clone().toString();
 
-        String russianResult = "";
+        String russianResult;
         double russianQuote = 0;
-        String germanResult = "";
+        String germanResult;
         double germanQuote = 0;
 
         //gets german quotes in double
@@ -235,7 +235,6 @@ public class BetService {
                 germanQuote = 0;
             }
         }
-
         //gets russian quotes in double
         if (!russianBet.isEmpty()) {
             String russianStep1 = horses.split(russianBet)[1].split(", Horse")[0];
@@ -252,6 +251,7 @@ public class BetService {
         ArrayList allQuotes = new ArrayList<Double>();
         allQuotes.add(russianQuote);
         allQuotes.add(germanQuote);
+
 
         //for combination and single bets
         if (russianQuote == 0) {
@@ -295,4 +295,12 @@ public class BetService {
         }
         return "";
     }
+
+
+    public List<BetSlipModel> getAllBetSlips(String uuid) {
+
+        UserModel user = userRepository.findByUuid(uuid);
+        return user.getBetSlips();
+    }
+
 }

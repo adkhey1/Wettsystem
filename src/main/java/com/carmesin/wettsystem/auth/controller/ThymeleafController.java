@@ -21,5 +21,9 @@ public class ThymeleafController {
         return "login";
     }
 
+    @GetMapping("/profil")
+    public String profil() {
+        return "profil";
+    }
 }
 

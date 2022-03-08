@@ -25,9 +25,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="wettschein">Aktueller Wettschein</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="alleWettscheine">Deine Wettschein</a>
                 </li>
                 <li class="nav-item">
@@ -38,7 +35,39 @@
     </div>
 </nav>
 
-    <h1>Your Bet-Slips</h1>
+<h1>Your Bet-Slips</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Quote</th>
+        <th scope="col">Credits</th>
+        <th scope="col">Total Quote</th>
+        <th scope="col">Total Win</th>
+        <th scope="col">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="betSlip : ${betSlips}">
+        <td>
+            <span th:text="${betSlip.germanHorse}"></span>
+            <br>
+            <span th:text="${betSlip.russianHorse}"></span>
+        </td>
+        <td>
+            <span th:text="${betSlip.germanQuote}"></span>
+            <br>
+            <span th:text="${betSlip.russianQuote}"></span>
+        </td>
+        <td><span th:text="${betSlip.creditsBet}"></span></td>
+        <td><span th:text="${betSlip.totalQuote}"></span></td>
+        <td><span th:text="${betSlip.totalWin}"></span></td>
+        <td><span th:text="${betSlip.status}"></span></td>
+    </tr>
+    </tbody>
+</table>
+
 
 </body>
 </html>

@@ -53,10 +53,13 @@ public class BetController {
         return "wetten";
     }
 
-    @PostMapping("/betSlip")
-    public String betSlip(){
 
-        return "alleWettschein";
+    @GetMapping("/alleWettscheine")
+    public String betSlip(Model model, HttpServletRequest request){
+
+        String uuid = getUuidFromCookie(request);
+        model.addAttribute("betSlips", betService.getAllBetSlips(uuid));
+        return "alleWettscheine";
     }
 
     private String getUuidFromCookie(HttpServletRequest request) {
