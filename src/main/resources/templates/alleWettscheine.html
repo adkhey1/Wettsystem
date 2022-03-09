@@ -17,7 +17,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="wetten">Startseite</a>
+        <a class="navbar-brand" href="wetten">Homepage</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -25,10 +25,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="alleWettscheine">Deine Wettschein</a>
+                    <a class="nav-link active" aria-current="page" href="alleWettscheine">Your BetSlips</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profil">Deine Profil</a>
+                    <a class="nav-link" href="profil">Your Profile</a>
                 </li>
             </ul>
         </div>
@@ -63,7 +63,10 @@
         <td><span th:text="${betSlip.creditsBet}"></span></td>
         <td><span th:text="${betSlip.totalQuote}"></span></td>
         <td><span th:text="${betSlip.totalWin}"></span></td>
-        <td><span th:text="${betSlip.status}"></span></td>
+        <td>
+            <span th:if="${betSlip.status=='lose'}"> <font color=red>lose</font></span>
+            <span th:if="${betSlip.status=='win'}"> <font color=green>win</font></span>
+        </td>
     </tr>
     </tbody>
 </table>

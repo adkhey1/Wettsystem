@@ -4,17 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rechner</title>
-</head>
-<body>
+    <title>Register</title>
 
-<h1>Noten Rechner</h1>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+</head>
+
+<body class=container>
+
+<h1>Betting-System</h1>
 <br>
-<p>Hier registrieren</p>
+<p>Register here!</p>
 <form th:action="@{/register}" method="post">
 
     <input type="text" name="title" id="title" placeholder="Title" required="required">
-    <input type="text" name="name" id="name" placeholder="Benutzer" required="required">
+    <input type="text" name="name" id="name" placeholder="Username" required="required">
     <input type="text" name="email" id="email" placeholder="E-Mail" required="required">
 
     <br>
@@ -35,7 +42,7 @@
     <br>
 
     <input type="password" name="password" id="password" placeholder="Password" required="required">
-    <input type="password" name="password2" id="password2" placeholder="Erneut eingeben" required="required">
+    <input type="password" name="password2" id="password2" placeholder="Re-entries" required="required">
 
     <br>
 
@@ -44,7 +51,7 @@
     <br>
 
     <a href="/wetten">
-        <button>Registrieren</button>
+        <button>Register</button>
     </a>
 
 </form>

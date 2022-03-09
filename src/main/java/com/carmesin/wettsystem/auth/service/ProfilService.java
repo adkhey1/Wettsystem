@@ -49,7 +49,7 @@ public class ProfilService {
             user.setCredits(user.getCredits() + amount);
             userRepository.save(user);
 
-            model.addAttribute("profil", "Successful Load!");
+            model.addAttribute("profil", "Successful Deposit!");
             return "Successful Load!";
 
         } else if (contact.contains("btn_abbuchen"))  {
@@ -59,7 +59,7 @@ public class ProfilService {
             user.setCredits(user.getCredits() - amount);
             userRepository.save(user);
 
-            model.addAttribute("profil", "Successful Withdraw!");
+            model.addAttribute("profil", "Successful Pay out!");
             return "Successful Withdraw!";
 
         } else {
