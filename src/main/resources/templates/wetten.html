@@ -55,6 +55,7 @@
                     <th> Quote</th>
                 </tr>
                 </thead>
+                <!---------------------------------------->
                 <tbody>
                 <tr th:each="russianHorse : ${russianLeague}">
                     <td><span th:text="${russianHorse.horse.name}"> Name </span></td>
@@ -81,6 +82,7 @@
                     <th> Quote</th>
                 </tr>
                 </thead>
+                <!---------------------------------------->
                 <tbody>
                 <tr th:each="germanHorse : ${germanLeague}">
                     <td><span th:text="${germanHorse.horse.name}"> Name </span></td>
@@ -126,8 +128,8 @@
                     <label for="input_credit" class="form-label">Credits</label>
                     <input type="number" class="form-control" name="input_credit" id="input_credit" placeholder="100" required="required">
                 </div>
-                <p class="m-2" id="p_totalQuote">Total Quote: 1</p>
-                <p class="m-2" id="p_totalWin">Total Win: 0</p>
+                <p class="m-2" id="p_totalQuote">Gesamtquote: 1</p>
+                <p class="m-2" id="p_totalWin">Gesamtgewinn: 0</p>
 
                 <input type="text" name="input_german_bet_name" id="input_german_bet_name" hidden>
                 <input type="text" name="input_russian_bet_name" id="input_russian_bet_name" hidden>
@@ -137,7 +139,9 @@
 
     </div>
 </div>
+
 <p th:text=${end}/></p>
+
 <script>
     const radio_russian = document.getElementsByName('radio_russian');
     const radio_german = document.getElementsByName('radio_german');

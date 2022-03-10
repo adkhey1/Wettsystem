@@ -53,7 +53,6 @@ public class BetController {
         return "wetten";
     }
 
-
     @GetMapping("/alleWettscheine")
     public String betSlip(Model model, HttpServletRequest request){
 
